@@ -1,0 +1,4 @@
+krakenex
+pandas
+numpy
+ta

@@ -1,0 +1,10 @@
+services:
+  trading-bot:
+    build: .
+    container_name: kraken_bot
+    environment:
+      - KRAKEN_API_KEY=YOUR_KRAKEN_API_KEY
+      - KRAKEN_API_SECRET=YOUR_KRAKEN_API_SECRET
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
