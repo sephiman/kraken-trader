@@ -10,6 +10,7 @@ RUN useradd -ms /bin/bash appuser
 WORKDIR /app
 
 RUN chown -R appuser:appuser /app
+RUN mkdir -p /var/logs && chown -R appuser:appuser /var/logs
 
 USER appuser
 
