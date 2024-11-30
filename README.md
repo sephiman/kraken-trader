@@ -1,22 +1,25 @@
 # Kraken Trading Bot
 
-A Python-based trading bot designed to scalp **BTC/USDT** on Kraken. It uses **Relative Strength Index (RSI)** and **MACD** indicators to execute trades, aiming to increase USDT holdings. The bot is containerized using Docker for easy deployment and includes detailed logging.
+A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Relative Strength Index (RSI)** and **MACD** indicators to execute trades, aiming to increase USD holdings. The bot is containerized using Docker for easy deployment and includes detailed logging.
 
 ---
 
 ## Features
 
-- **Indicators Used**:
-  - **RSI**: Identifies overbought/oversold conditions.
-  - **MACD**: Tracks trend strength and crossovers.
 - **Automated Trading**:
   - Executes buy orders when RSI indicates oversold and MACD signals a bullish crossover.
   - Executes sell orders when RSI indicates overbought and MACD signals a bearish crossover.
-- **Secure Configuration**:
-  - API credentials stored as environment variables.
-  - Runs as a non-root user in the Docker container.
-- **Comprehensive Logging**:
-  - Logs trades, signals, and errors to both the console and a file for review.
+- **Technical Indicators**:
+  - **RSI**: Identifies overbought/oversold market conditions.
+  - **MACD**: Measures trend momentum and identifies crossovers.
+  - **Bollinger Bands**: Adds dynamic support/resistance for more accurate signals.
+- **Secure and Flexible**:
+  - API credentials stored as environment variables for security.
+  - Fully configurable trading parameters (e.g., trade amount, indicator thresholds).
+- **Containerized Deployment**:
+  - Easy to deploy with Docker and Docker Compose.
+- **Detailed Logging**:
+  - Logs buy/sell signals, trade execution details, and errors to both the console and a file for review.
 
 ---
 
@@ -24,15 +27,24 @@ A Python-based trading bot designed to scalp **BTC/USDT** on Kraken. It uses **R
 
 ```plaintext
 kraken_bot/
-├── docker-compose.yml         # Docker Compose configuration
-├── Dockerfile                 # Dockerfile for containerizing the bot
-├── requirements.txt           # Python dependencies
-├── main.py                    # Main bot logic
-├── config.py                  # Configuration file
-├── utils/
-│   ├── indicators.py          # RSI and MACD calculation utilities
-│   └── logger.py              # Logging setup
-└── logs/                      # Directory for log files
+├── docker-compose.yml          # Docker Compose configuration
+├── Dockerfile                  # Dockerfile for containerizing the bot
+├── requirements.txt            # Python dependencies
+├── main.py                     # Main entry point for the bot
+├── config/                     # Configuration files and environment setup
+│   └── config.py               # Configuration settings
+├── core/                       # Core trading logic
+│   ├── bot.py                  # Scalping bot logic
+│   ├── account.py              # Account balance and trade execution
+│   ├── indicators.py           # RSI, MACD, Bollinger Bands calculations
+│   └── utils.py                # Utility functions (e.g., fetch price, OHLC data)
+├── logs/                       # Directory for log files
+│   └── trading_bot.log         # Default log file
+├── utils/                      # Logging and helper utilities
+│   ├── logger.py               # Logger setup
+│   └── exceptions.py           # Custom exception handling
+└── tests/                      # Unit tests for components
+    └── test_indicators.py      # Example test for indicator calculations
 ```
 
 ## Prerequisites
@@ -68,28 +80,41 @@ Use Docker Compose to build and start the bot:
 docker-compose up --build
 ```
 
+
+---
+
+### **6. Configuration**
+Current Text:
+> Lists configurable parameters from `config.py`.
+
+**Suggested Changes**:
+- Include detailed examples for how configuration changes impact the bot.
+- Mention the importance of setting trade parameters based on risk tolerance.
+
+**Revised Text**:
+```markdown
 ## Configuration
 
-You can customize the bot's behavior by modifying the config.py file. Below are the key configuration options:
-RSI Settings
+The bot's behavior can be customized by modifying `config.py`:
 
-    RSI_PERIOD: The number of periods used to calculate the RSI. Default is 14.
-    RSI_OVERBOUGHT: RSI value above which a sell signal is triggered. Default is 70.
-    RSI_OVERSOLD: RSI value below which a buy signal is triggered. Default is 30.
+### RSI Settings
+- `RSI_PERIOD`: Number of periods for RSI calculation. Default is 14.
+- `RSI_OVERBOUGHT`: Sell signal threshold. Default is 60.
+- `RSI_OVERSOLD`: Buy signal threshold. Default is 40.
 
-MACD Settings
+### MACD Settings
+- `MACD_SHORT`: Short window for MACD. Default is 12.
+- `MACD_LONG`: Long window for MACD. Default is 26.
+- `MACD_SIGNAL`: Signal line period. Default is 9.
 
-    MACD_SHORT: The short window period for MACD calculation. Default is 12.
-    MACD_LONG: The long window period for MACD calculation. Default is 26.
-    MACD_SIGNAL: The signal line window period for MACD calculation. Default is 9.
+### Trading Parameters
+- `TRADE_AMOUNT`: USD amount to trade per transaction. Default is 10.
 
-Trading Parameters
+### Logs
+- `LOG_FILE`: Path to log file. Default is `logs/trading_bot.log`.
 
-    TRADE_AMOUNT: The USDT amount to trade per transaction. Adjust according to your risk tolerance and account size. Default is 100.
+> **Tip**: Start with small trade amounts and backtest configurations before running live.
 
-Log Configuration
-
-    LOG_FILE: The file path where logs will be saved. Default is logs/trading_bot.log.
 
 ## Logs
 
