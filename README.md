@@ -62,8 +62,8 @@ kraken_bot/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your_username/kraken-trading-bot.git
-cd kraken-trading-bot
+git clone https://github.com/sephiman/kraken-trader.git
+cd kraken-trader
 ```
 
 ### 2. Set Up Environment Variables
