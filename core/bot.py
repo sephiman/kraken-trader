@@ -35,7 +35,6 @@ def scalping_bot(api):
             execute_trade("sell", api, PAIR, TRADE_AMOUNT)
         else:
             logger.info("No trade signal detected, sleeping for 60 seconds...")
-            execute_trade("sell", api, PAIR, TRADE_AMOUNT)
 
         time.sleep(60)
 
