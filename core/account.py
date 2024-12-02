@@ -23,7 +23,7 @@ def get_account_balance(api, pair):
 
 def place_buy_order(api, pair, quote_balance, amount):
     price = fetch_current_price(api, pair)
-    logger.info(f"Current price for {pair}: {price}")
+    logger.debug(f"Current price for {pair}: {price}")
     max_volume = quote_balance / price
     if max_volume < 0.0001:
         logger.warning(f"Not enough funds to buy {pair}")

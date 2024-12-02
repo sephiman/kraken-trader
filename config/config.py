@@ -25,4 +25,7 @@ BOLLINGER_STD_DEV = 1.5  # The number of standard deviations added/subtracted fr
 # providing a narrower or wider range for detecting price volatility.
 
 
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
 LOG_FILE = os.getenv("LOG_FILE", "./logs/trading_bot.log")

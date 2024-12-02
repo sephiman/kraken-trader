@@ -8,6 +8,8 @@ services:
       - LOG_FILE=/var/logs/trading_bot.log
       - PAIR=BTC/USD
       - TRADE_AMOUNT=10
+      - TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN
+      - TELEGRAM_CHAT_ID=CHAT_ID_WITH_BOT
     volumes:
       - ./logs:/var/logs
     restart: unless-stopped
