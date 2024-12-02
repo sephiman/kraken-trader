@@ -5,17 +5,27 @@ def get_account_balance(api, pair):
     logger.info("Fetching account balance...")
     balance = api.query_private('Balance')['result']
     logger.info(f"Account balance fetched: {balance}")
-    return {
-        'base': float(balance.get(pair.split('/')[0], 0)),
-        'quote': float(balance.get(pair.split('/')[1], 0))
+
+    asset_map = {
+        "BTC": "XXBT",
+        "ETH": "XETH",
+        "USD": "ZUSD",
+        "EUR": "ZEUR"
     }
+
+    base_asset, quote_asset = pair.split('/')  # E.g., BTC/USD -> base: BTC, quote: USD
+    base_balance = float(balance.get(asset_map.get(base_asset, base_asset), 0))
+    quote_balance = float(balance.get(asset_map.get(quote_asset, quote_asset), 0))
+
+    logger.info(f"Base balance ({base_asset}): {base_balance:.8f}, Quote balance ({quote_asset}): {quote_balance:.2f}")
+    return {'base': base_balance, 'quote': quote_balance}
 
 def place_buy_order(api, pair, quote_balance, amount):
     price = fetch_current_price(api, pair)
     logger.info(f"Current price for {pair}: {price}")
     max_volume = quote_balance / price
     if max_volume < 0.0001:
-        logger.warning("Not enough funds to buy BTC")
+        logger.warning(f"Not enough funds to buy {pair}")
         return
     volume = min(amount, max_volume)
     order = api.query_private('AddOrder', {
@@ -28,7 +38,7 @@ def place_buy_order(api, pair, quote_balance, amount):
 
 def place_sell_order(api, pair, base_balance):
     if base_balance < 0.0001:
-        logger.warning("Not enough BTC to sell")
+        logger.warning(f"Not enough {pair} to sell")
         return
     order = api.query_private('AddOrder', {
         'pair': pair.replace('/', ''),

@@ -6,6 +6,8 @@ services:
       - KRAKEN_API_KEY=YOUR_KRAKEN_API_KEY
       - KRAKEN_API_SECRET=YOUR_KRAKEN_API_SECRET
       - LOG_FILE=/var/logs/trading_bot.log
+      - PAIR=BTC/USD
+      - TRADE_AMOUNT=10
     volumes:
       - ./logs:/var/logs
     restart: unless-stopped
