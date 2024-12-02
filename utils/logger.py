@@ -1,5 +1,7 @@
 import logging
+
 from config.config import LOG_FILE
+
 
 def _setup_logger():
     logger = logging.getLogger("trading_bot")
@@ -12,5 +14,6 @@ def _setup_logger():
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
     return logger
+
 
 logger = _setup_logger()

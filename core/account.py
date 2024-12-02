@@ -2,9 +2,9 @@ from utils.utils import fetch_current_price, logger
 
 
 def get_account_balance(api, pair):
-    logger.info("Fetching account balance...")
+    logger.debug("Fetching account balance...")
     balance = api.query_private('Balance')['result']
-    logger.info(f"Account balance fetched: {balance}")
+    logger.debug(f"Account balance fetched: {balance}")
 
     asset_map = {
         "BTC": "XXBT",
@@ -19,6 +19,7 @@ def get_account_balance(api, pair):
 
     logger.info(f"Base balance ({base_asset}): {base_balance:.8f}, Quote balance ({quote_asset}): {quote_balance:.2f}")
     return {'base': base_balance, 'quote': quote_balance}
+
 
 def place_buy_order(api, pair, quote_balance, amount):
     price = fetch_current_price(api, pair)
@@ -36,6 +37,7 @@ def place_buy_order(api, pair, quote_balance, amount):
     })
     logger.info(f"Buy order placed: {order}")
 
+
 def place_sell_order(api, pair, base_balance):
     if base_balance < 0.0001:
         logger.warning(f"Not enough {pair} to sell")
@@ -48,8 +50,9 @@ def place_sell_order(api, pair, base_balance):
     })
     logger.info(f"Sell order placed: {order}")
 
+
 def execute_trade(action, api, pair, amount):
-    logger.info(f"Executing {action.upper()} trade...")
+    logger.debug(f"Executing {action.upper()} trade...")
     balance = get_account_balance(api, pair)
     if action == "buy":
         place_buy_order(api, pair, balance['quote'], amount)
