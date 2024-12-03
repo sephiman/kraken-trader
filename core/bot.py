@@ -16,7 +16,7 @@ def should_sell(rsi, macd, signal, price, upper_band):
     return rsi > RSI_OVERBOUGHT and macd < signal and price >= upper_band
 
 
-def scalping_bot(api):
+def bot(api):
     while True:
         logger.info("Starting a new iteration of the scalping bot...")
         prices = fetch_ohlc(api, PAIR, interval=1)
