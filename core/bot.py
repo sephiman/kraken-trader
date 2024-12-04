@@ -41,11 +41,13 @@ def bot(api):
             upper_band, lower_band = calculate_bollinger_bands(prices)
             drop_percentage = ((last_buy_price - current_price) / last_buy_price) * 100 if last_buy_price else None
 
-            logger.info(
+            drop_percentage_str = f"{drop_percentage:.2f}%" if drop_percentage is not None else "N/A"
+            log_message = (
                 f"RSI: {rsi:.2f}, MACD: {macd:.2f}, Signal: {signal:.2f}, "
                 f"Upper Band: {upper_band:.2f}, Lower Band: {lower_band:.2f}, "
-                f"Drop Percentage: {drop_percentage:.2f}%" if drop_percentage is not None else "Drop Percentage: N/A"
+                f"Drop Percentage: {drop_percentage_str}"
             )
+            logger.info(log_message)
 
             if should_buy(rsi, macd, signal, current_price, lower_band, drop_percentage):
                 message = f"Buy signal detected for {PAIR}:\n- RSI: {rsi:.2f}\n- MACD: {macd:.2f}\n- Signal: {signal:.2f}\n- Price: {current_price:.2f}"
