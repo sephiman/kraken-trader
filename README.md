@@ -8,6 +8,7 @@ A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Re
 
 - **Automated Trading**:
   - Executes buy orders when RSI indicates oversold and MACD signals a bullish crossover.
+  - Only add more buy orders if the new price is better given a threshold
   - Executes sell orders when RSI indicates overbought and MACD signals a bearish crossover.
 - **Technical Indicators**:
   - **RSI**: Identifies overbought/oversold market conditions.
