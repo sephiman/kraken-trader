@@ -57,7 +57,7 @@ def place_sell_order(api, pair, base_balance):
 def execute_trade(action, api, pair, amount):
     logger.debug(f"Executing {action.upper()} trade...")
     balance = get_account_balance(api, pair)
-
+    current_price = fetch_current_price(api, pair)
     try:
         if action == "buy":
             order = place_buy_order(api, pair, balance['quote'], amount)
@@ -67,9 +67,12 @@ def execute_trade(action, api, pair, amount):
             raise ValueError(f"Invalid trade action: {action}")
 
         if order:
-            message = f"{action.capitalize()} trade executed successfully for {pair}:\n" \
-                      f"- Amount: {amount}\n" \
-                      f"- Order Details: {order}"
+            message = (
+                f"{action.capitalize()} trade executed successfully for {pair}:\n"
+                f"- Amount: {amount} USD\n"
+                f"- Price: {current_price:.2f} USD\n"
+                f"- Order Details: {order}"
+            )
             logger.info(message)
             send_telegram_message(message)
         else:
