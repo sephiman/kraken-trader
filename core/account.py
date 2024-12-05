@@ -29,10 +29,6 @@ def place_buy_order(api, pair, quote_balance, amount):
     max_volume = quote_balance / price
     volume = min(trade_volume, max_volume)
 
-    if volume < 0.0001:
-        message = f"Not enough funds to buy {pair} with trade amount {amount} USD"
-        logger.warning(message)
-        return None
     order = api.query_private('AddOrder', {
         'pair': pair.replace('/', ''),
         'type': 'buy',
