@@ -8,14 +8,14 @@ TRADE_AMOUNT = float(os.getenv("TRADE_AMOUNT", 10))
 NEW_BUY_THRESHOLD = float(os.getenv("NEW_BUY_THRESHOLD", 0.05))
 
 # RSI (Relative Strength Index) Configuration
-RSI_PERIOD = 10  # Number of periods used for calculating RSI
-RSI_OVERBOUGHT = 65  # RSI value above which the asset is considered overbought (sell signal)
-RSI_OVERSOLD = 35  # RSI value below which the asset is considered oversold (buy signal)
+RSI_PERIOD = 7  # Number of periods used for calculating RSI
+RSI_OVERBOUGHT = 60  # RSI value above which the asset is considered overbought (sell signal)
+RSI_OVERSOLD = 40  # RSI value below which the asset is considered oversold (buy signal)
 
 # MACD (Moving Average Convergence Divergence) Configuration
-MACD_SHORT = 9  # Short-term EMA (Exponential Moving Average) period for MACD
-MACD_LONG = 26  # Long-term EMA period for MACD
-MACD_SIGNAL = 7  # Signal line EMA period used to generate buy/sell crossovers
+MACD_SHORT = 8  # Short-term EMA (Exponential Moving Average) period for MACD
+MACD_LONG = 21  # Long-term EMA period for MACD
+MACD_SIGNAL = 5  # Signal line EMA period used to generate buy/sell crossovers
 
 # Bollinger Bands settings
 BOLLINGER_PERIOD = 14  # The lookback period for calculating the moving average.

@@ -58,27 +58,39 @@ def execute_trade(action, api, pair, amount):
     logger.debug(f"Executing {action.upper()} trade...")
     balance = get_account_balance(api, pair)
     current_price = fetch_current_price(api, pair)
+    base_asset = pair.split('/')[0]
     try:
         if action == "buy":
             order = place_buy_order(api, pair, balance['quote'], amount)
+            if order:
+                usd_spent = amount
+                message = (
+                    f"Buy trade executed successfully for {pair}:\n"
+                    f"- Amount: {usd_spent:.2f} USD\n"
+                    f"- Price: {current_price:.2f} USD\n"
+                    f"- Order Details: {order}"
+                )
         elif action == "sell":
             order = place_sell_order(api, pair, balance['base'])
+            if order:
+                base_sold = balance['base']  # The actual units of the base asset you sold
+                usd_value = base_sold * current_price
+                message = (
+                    f"Sell trade executed successfully for {pair}:\n"
+                    f"- Amount Sold: {base_sold:.8f} {base_asset} (~{usd_value:.2f} USD)\n"
+                    f"- Price: {current_price:.2f} USD\n"
+                    f"- Order Details: {order}"
+                )
         else:
             raise ValueError(f"Invalid trade action: {action}")
 
         if order:
-            message = (
-                f"{action.capitalize()} trade executed successfully for {pair}:\n"
-                f"- Amount: {amount} USD\n"
-                f"- Price: {current_price:.2f} USD\n"
-                f"- Order Details: {order}"
-            )
             logger.info(message)
             send_telegram_message(message)
         else:
             raise Exception("Order placement failed")
 
     except Exception as e:
-        message = f"{action.capitalize()} trade failed for {pair}: {e}"
+        message = f"{action.capitalize()} trade failed for {pair} with current price {current_price}: {e}"
         logger.error(message)
         send_telegram_message(message)
