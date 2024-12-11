@@ -6,6 +6,7 @@ services:
       - KRAKEN_API_KEY=YOUR_KRAKEN_API_KEY
       - KRAKEN_API_SECRET=YOUR_KRAKEN_API_SECRET
       - LOG_FILE=/var/logs/trading_bot.log
+      - TRADE_HISTORY=/var/logs/trade_history.json
       - PAIR=BTC/USD
       - TRADE_AMOUNT=10
       - TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN

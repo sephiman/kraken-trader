@@ -1,3 +1,4 @@
+from utils.data_tracker import record_trade
 from utils.telegram import send_telegram_message
 from utils.utils import fetch_current_price, logger
 
@@ -62,25 +63,37 @@ def execute_trade(action, api, pair, amount):
     try:
         if action == "buy":
             order = place_buy_order(api, pair, balance['quote'], amount)
+            base_bought = amount / current_price
             if order:
                 usd_spent = amount
                 message = (
                     f"Buy trade executed successfully for {pair}:\n"
                     f"- Amount: {usd_spent:.2f} USD\n"
+                    f"- Bought: {base_bought:.2f} USD\n"
                     f"- Price: {current_price:.2f} USD\n"
                     f"- Order Details: {order}"
                 )
+            record_trade("buy", pair, amount, current_price, base_bought, amount)
         elif action == "sell":
+            if balance['base'] < 0.000001:
+                message = (
+                    f"Attempted to sell {pair} at price {current_price:.2f}, "
+                    f"but no balance available (Current base balance: {balance['base']:.8f})."
+                )
+                logger.warning(message)
+                send_telegram_message(message)
+                return
             order = place_sell_order(api, pair, balance['base'])
+            base_sold = balance['base']
+            usd_value = base_sold * current_price
             if order:
-                base_sold = balance['base']  # The actual units of the base asset you sold
-                usd_value = base_sold * current_price
                 message = (
                     f"Sell trade executed successfully for {pair}:\n"
                     f"- Amount Sold: {base_sold:.8f} {base_asset} (~{usd_value:.2f} USD)\n"
                     f"- Price: {current_price:.2f} USD\n"
                     f"- Order Details: {order}"
                 )
+            record_trade("sell", pair, usd_value, current_price, base_sold, usd_value)
         else:
             raise ValueError(f"Invalid trade action: {action}")
 
@@ -91,6 +104,6 @@ def execute_trade(action, api, pair, amount):
             raise Exception("Order placement failed")
 
     except Exception as e:
-        message = f"{action.capitalize()} trade failed for {pair} with current price {current_price}: {e}"
+        message = f"{action.capitalize()} trade failed for {pair} with current price {current_price:.2f}: {e}"
         logger.error(message)
         send_telegram_message(message)

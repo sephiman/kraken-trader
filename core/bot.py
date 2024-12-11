@@ -1,8 +1,10 @@
 import time
+from datetime import datetime, UTC
 
 from config.config import PAIR, TRADE_AMOUNT, RSI_OVERBOUGHT, RSI_OVERSOLD, NEW_BUY_THRESHOLD
-from core.account import execute_trade
+from core.account import execute_trade, get_account_balance
 from core.indicators import calculate_rsi, calculate_macd, calculate_bollinger_bands
+from utils.data_tracker import record_balance, get_summary
 from utils.logger import logger
 from utils.telegram import send_telegram_message
 from utils.utils import fetch_ohlc
@@ -25,6 +27,7 @@ def should_sell(rsi, macd, signal, price, upper_band):
 
 
 def bot(api):
+    daily_summary_sent = False
     last_buy_price = None
     while True:
         try:
@@ -62,8 +65,31 @@ def bot(api):
             else:
                 logger.info("No trade signal detected, sleeping for 60 seconds...")
 
+            daily_summary_sent = send_summary(api, daily_summary_sent)
         except Exception as e:
             logger.error(f"An error occurred: {e}")
             send_telegram_message(f"Error in bot execution: {e}")
 
         time.sleep(60)
+
+
+def send_summary(api, daily_summary_sent):
+    current_hour_utc = datetime.now(tz=UTC).hour
+    if current_hour_utc == 0 and not daily_summary_sent:
+        balance = get_account_balance(api, PAIR)
+        record_balance(balance)
+        last_24h = get_summary(days=1)
+        last_7d = get_summary(days=7)
+        last_30d = get_summary(days=30)
+        summary_message = (
+            f"Daily Summary:\n"
+            f"Current balance: {balance['base']} BTC and {balance['quote']} USD\n"
+            f"Last 24h P/L: {last_24h:.2f} USD\n"
+            f"Last 7d P/L: {last_7d:.2f} USD\n"
+            f"Last 30d P/L: {last_30d:.2f} USD"
+        )
+        send_telegram_message(summary_message)
+        return True
+    elif current_hour_utc != 0:
+        return False
+    return daily_summary_sent

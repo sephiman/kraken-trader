@@ -8,19 +8,32 @@ A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Re
 
 - **Automated Trading**:
   - Executes buy orders when RSI indicates oversold and MACD signals a bullish crossover.
-  - Only add more buy orders if the new price is better given a threshold
+  - Only adds more buy orders if the new price improves upon the last buy price (configurable threshold).
   - Executes sell orders when RSI indicates overbought and MACD signals a bearish crossover.
+
 - **Technical Indicators**:
-  - **RSI**: Identifies overbought/oversold market conditions.
+  - **RSI**: Identifies overbought/oversold conditions.
   - **MACD**: Measures trend momentum and identifies crossovers.
-  - **Bollinger Bands**: Adds dynamic support/resistance for more accurate signals.
+  - **Bollinger Bands**: Dynamic support/resistance for more accurate signals.
+
+- **Daily Statistics Summary**:
+  - At the end of each day (UTC), the bot automatically calculates and sends a Telegram message summarizing:
+    - Current account balances
+    - Profit/Loss for the last 24 hours
+    - Profit/Loss for the last 7 days
+    - Profit/Loss for the last 30 days
+  - This daily report helps you track performance over multiple timeframes without manual effort.
+
 - **Secure and Flexible**:
   - API credentials stored as environment variables for security.
   - Fully configurable trading parameters (e.g., trade amount, indicator thresholds).
+
 - **Containerized Deployment**:
   - Easy to deploy with Docker and Docker Compose.
+
 - **Detailed Logging**:
-  - Logs buy/sell signals, trade execution details, and errors to both the console and a file for review.
+  - Logs buy/sell signals, trade execution details, indicator values, and daily summaries to both console and file.
+  - Telegram alerts keep you informed of executed trades and daily performance metrics.
 
 ---
 
@@ -84,16 +97,6 @@ docker-compose up --build
 
 ---
 
-### **6. Configuration**
-Current Text:
-> Lists configurable parameters from `config.py`.
-
-**Suggested Changes**:
-- Include detailed examples for how configuration changes impact the bot.
-- Mention the importance of setting trade parameters based on risk tolerance.
-
-**Revised Text**:
-```markdown
 ## Configuration
 
 The bot's behavior can be customized by modifying `config.py`:
@@ -116,6 +119,14 @@ The bot's behavior can be customized by modifying `config.py`:
 
 > **Tip**: Start with small trade amounts and backtest configurations before running live.
 
+## Telegram Integration
+
+The bot can send real-time trade notifications and daily performance summaries to your Telegram chat:
+
+- **Trade Alerts**: Notifies you of executed buy and sell orders, as well as failures.
+- **Daily Summary**: Sends a daily report including balances and profit/loss over multiple timeframes.
+
+Configure your Telegram bot token and chat ID in `docker-compose.yml` or through environment variables.
 
 ## Logs
 
