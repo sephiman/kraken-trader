@@ -81,7 +81,6 @@ def execute_trade(action, api, pair, amount):
                     f"but no balance available (Current base balance: {balance['base']:.8f})."
                 )
                 logger.warning(message)
-                send_telegram_message(message)
                 return
             order = place_sell_order(api, pair, balance['base'])
             base_sold = balance['base']
