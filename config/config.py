@@ -6,6 +6,7 @@ KRAKEN_API_SECRET = os.getenv("KRAKEN_API_SECRET")
 PAIR = os.getenv("PAIR")
 TRADE_AMOUNT = float(os.getenv("TRADE_AMOUNT", 10))
 NEW_BUY_THRESHOLD = float(os.getenv("NEW_BUY_THRESHOLD", 0.05))
+MIN_AMOUNT_TO_SELL = float(os.getenv("MIN_AMOUNT", 0.000001))
 
 # RSI (Relative Strength Index) Configuration
 RSI_PERIOD = 7  # Number of periods used for calculating RSI

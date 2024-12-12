@@ -1,16 +1,16 @@
 import pandas as pd
 import ta
 
-from config.config import BOLLINGER_PERIOD, BOLLINGER_STD_DEV
+from config.config import BOLLINGER_PERIOD, BOLLINGER_STD_DEV, MACD_SHORT, MACD_LONG, MACD_SIGNAL, RSI_PERIOD
 
 
-def calculate_rsi(prices, period=14):
-    return ta.momentum.RSIIndicator(pd.Series(prices), window=period).rsi().iloc[-1]
+def calculate_rsi(prices):
+    return ta.momentum.RSIIndicator(pd.Series(prices), window=RSI_PERIOD).rsi().iloc[-1]
 
 
-def calculate_macd(prices, short_window=12, long_window=26, signal_window=9):
-    macd = ta.trend.MACD(pd.Series(prices), window_slow=long_window, window_fast=short_window,
-                         window_sign=signal_window)
+def calculate_macd(prices):
+    macd = ta.trend.MACD(pd.Series(prices), window_slow=MACD_LONG, window_fast=MACD_SHORT,
+                         window_sign=MACD_SIGNAL)
     return macd.macd().iloc[-1], macd.macd_signal().iloc[-1]
 
 

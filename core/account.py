@@ -1,3 +1,4 @@
+from config.config import MIN_AMOUNT_TO_SELL
 from utils.data_tracker import record_trade
 from utils.telegram import send_telegram_message
 from utils.utils import fetch_current_price, logger
@@ -41,10 +42,6 @@ def place_buy_order(api, pair, quote_balance, amount):
 
 
 def place_sell_order(api, pair, base_balance):
-    if base_balance < 0.0001:
-        message = f"Not enough {pair} to sell"
-        logger.warning(message)
-        return None
     order = api.query_private('AddOrder', {
         'pair': pair.replace('/', ''),
         'type': 'sell',
@@ -75,7 +72,7 @@ def execute_trade(action, api, pair, amount):
                 )
             record_trade("buy", pair, amount, current_price, base_bought, amount)
         elif action == "sell":
-            if balance['base'] < 0.000001:
+            if balance['base'] < MIN_AMOUNT_TO_SELL:
                 message = (
                     f"Attempted to sell {pair} at price {current_price:.2f}, "
                     f"but no balance available (Current base balance: {balance['base']:.8f})."
