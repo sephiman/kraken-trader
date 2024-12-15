@@ -16,6 +16,15 @@ A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Re
   - **MACD**: Measures trend momentum and identifies crossovers.
   - **Bollinger Bands**: Dynamic support/resistance for more accurate signals.
 
+- **Trend & Timeframe Confirmation**:
+  - **Trend Filter (Optional)**: Uses a moving average to confirm trend direction.  
+    For example:
+    - Only take buy signals if current price > MA (indicating an uptrend).
+    - Only take sell signals if current price < MA (indicating a downtrend).
+  - **Higher Timeframe Confirmation (Optional)**:  
+    Confirms signals from the primary chart with a higher timeframe (e.g., 5m) RSI and MACD.  
+    This helps reduce false signals by ensuring short-term setups align with broader market trends.
+
 - **Daily Statistics Summary**:
   - At the end of each day (UTC), the bot automatically calculates and sends a Telegram message summarizing:
     - Current account balances
@@ -26,13 +35,13 @@ A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Re
 
 - **Secure and Flexible**:
   - API credentials stored as environment variables for security.
-  - Fully configurable trading parameters (e.g., trade amount, indicator thresholds).
+  - Fully configurable trading parameters (e.g., trade amount, indicator thresholds, trend filters, higher timeframe confirmations).
 
 - **Containerized Deployment**:
   - Easy to deploy with Docker and Docker Compose.
 
 - **Detailed Logging**:
-  - Logs buy/sell signals, trade execution details, indicator values, and daily summaries to both console and file.
+  - Logs buy/sell signals, trend conditions, higher timeframe confirmations, and indicator values.
   - Telegram alerts keep you informed of executed trades and daily performance metrics.
 
 ---
@@ -102,22 +111,32 @@ docker-compose up --build
 The bot's behavior can be customized by modifying `config.py`:
 
 ### RSI Settings
-- `RSI_PERIOD`: Number of periods for RSI calculation. Default is 14.
-- `RSI_OVERBOUGHT`: Sell signal threshold. Default is 60.
-- `RSI_OVERSOLD`: Buy signal threshold. Default is 40.
+- `RSI_PERIOD`: Number of periods for RSI calculation.
+- `RSI_OVERBOUGHT`: Sell signal threshold.
+- `RSI_OVERSOLD`: Buy signal threshold.
 
 ### MACD Settings
-- `MACD_SHORT`: Short window for MACD. Default is 12.
-- `MACD_LONG`: Long window for MACD. Default is 26.
-- `MACD_SIGNAL`: Signal line period. Default is 9.
+- `MACD_SHORT`, `MACD_LONG`, `MACD_SIGNAL`: Short, long, and signal periods for MACD.
+
+### Bollinger Bands
+- `BOLLINGER_PERIOD`, `BOLLINGER_STD_DEV`: Period and standard deviation for Bollinger Bands.
+
+### Trend Filter (Optional)
+- `TREND_FILTER_ENABLED`: Set to `True` to enable trend filtering.
+- `TREND_MA_PERIOD`: Moving average period used to determine overall trend direction.
+
+### Higher Timeframe Confirmation (Optional)
+- `HIGHER_TF_CONFIRMATION_ENABLED`: Set to `True` to enable higher timeframe checks.
+- `HIGHER_TF_INTERVAL`: Interval (in minutes) for the higher timeframe data.
+- `HIGHER_TF_RSI_PERIOD`, `HIGHER_TF_RSI_OVERBOUGHT`, `HIGHER_TF_RSI_OVERSOLD`: RSI parameters for higher timeframe analysis.
+- `HIGHER_TF_MACD_SHORT`, `HIGHER_TF_MACD_LONG`, `HIGHER_TF_MACD_SIGNAL`: MACD parameters for the higher timeframe.
 
 ### Trading Parameters
-- `TRADE_AMOUNT`: USD amount to trade per transaction. Default is 10.
+- `TRADE_AMOUNT`: USD amount to trade per transaction.
+- `NEW_BUY_THRESHOLD`: Threshold for adding new buy orders at improved prices.
 
 ### Logs
-- `LOG_FILE`: Path to log file. Default is `logs/trading_bot.log`.
-
-> **Tip**: Start with small trade amounts and backtest configurations before running live.
+- `LOG_FILE`: Path to log file.
 
 ## Telegram Integration
 

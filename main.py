@@ -6,7 +6,6 @@ from utils.logger import logger
 
 if __name__ == "__main__":
     try:
-        # Initialize Kraken API client with credentials
         api = krakenex.API(key=KRAKEN_API_KEY, secret=KRAKEN_API_SECRET)
         logger.info("Starting Kraken Trading Bot")
         bot(api)  # Pass the `api` object to the bot
