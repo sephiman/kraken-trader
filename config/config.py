@@ -28,7 +28,7 @@ BOLLINGER_STD_DEV = 2.0  # The number of standard deviations added/subtracted fr
 
 # Confirmation signals
 # Trend filter parameters
-TREND_FILTER_ENABLED = True
+TREND_FILTER_ENABLED = False
 TREND_MA_PERIOD = 15
 
 # Higher timeframe confirmation
