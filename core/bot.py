@@ -5,7 +5,7 @@ from config.config import (
     PAIR, TRADE_AMOUNT, RSI_OVERBOUGHT, RSI_OVERSOLD, NEW_BUY_THRESHOLD,
     TREND_FILTER_ENABLED, TREND_MA_PERIOD,
     HIGHER_TF_CONFIRMATION_ENABLED, HIGHER_TF_INTERVAL,
-    HIGHER_TF_RSI_OVERBOUGHT, HIGHER_TF_RSI_OVERSOLD
+    HIGHER_TF_RSI_OVERBOUGHT, HIGHER_TF_RSI_OVERSOLD, INTERVAL_MINUTE
 )
 from core.account import execute_trade, get_account_balance
 from core.indicators import (
@@ -60,7 +60,7 @@ def bot(api):
     while True:
         try:
             logger.info("Starting a new iteration ...")
-            prices = fetch_ohlc(api, PAIR, interval=1)
+            prices = fetch_ohlc(api, PAIR, interval=INTERVAL_MINUTE)
             if not prices:
                 logger.warning("No prices fetched, sleeping for 60 seconds...")
                 time.sleep(60)
@@ -116,7 +116,7 @@ def bot(api):
             logger.error(f"An error occurred: {e}")
             send_telegram_message(f"Error in bot execution: {e}")
 
-        time.sleep(60)
+        time.sleep(INTERVAL_MINUTE * 60)
 
 
 def send_summary(api, daily_summary_sent):
