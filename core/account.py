@@ -1,28 +1,15 @@
 from config.config import MIN_AMOUNT_TO_SELL
 from utils.data_tracker import record_trade
+from utils.logger import logger
 from utils.telegram import send_telegram_message
-from utils.utils import fetch_current_price, logger
+from utils.utils import fetch_current_price
 
 
 def get_account_balance(api, pair):
     logger.debug("Fetching account balance...")
-    balance = api.query_private('Balance')['result']
-    logger.debug(f"Account balance fetched: {balance}")
-
-    asset_map = {
-        "BTC": "XXBT",
-        "ETH": "XETH",
-        "USD": "ZUSD",
-        "EUR": "ZEUR"
-    }
-
-    base_asset, quote_asset = pair.split('/')  # E.g., BTC/USD -> base: BTC, quote: USD
-    base_balance = float(balance.get(asset_map.get(base_asset, base_asset), 0))
-    quote_balance = float(balance.get(asset_map.get(quote_asset, quote_asset), 0))
-
-    logger.info(f"Base balance ({base_asset}): {base_balance:.8f}, Quote balance ({quote_asset}): {quote_balance:.2f}")
-    return {'base': base_balance, 'quote': quote_balance}
-
+    balance = api.get_balance(pair)
+    logger.info(f"Account balance fetched: {balance}")
+    return balance
 
 def place_buy_order(api, pair, quote_balance, amount):
     price = fetch_current_price(api, pair)
@@ -30,24 +17,13 @@ def place_buy_order(api, pair, quote_balance, amount):
     trade_volume = amount / price
     max_volume = quote_balance / price
     volume = min(trade_volume, max_volume)
-
-    order = api.query_private('AddOrder', {
-        'pair': pair.replace('/', ''),
-        'type': 'buy',
-        'ordertype': 'market',
-        'volume': volume
-    })
+    order = api.place_order('buy', pair, volume)
     logger.info(f"Buy order placed: {order}")
     return order
 
 
 def place_sell_order(api, pair, base_balance):
-    order = api.query_private('AddOrder', {
-        'pair': pair.replace('/', ''),
-        'type': 'sell',
-        'ordertype': 'market',
-        'volume': base_balance
-    })
+    order = api.place_order('sell', pair, base_balance)
     logger.info(f"Sell order placed: {order}")
     return order
 
@@ -66,7 +42,7 @@ def execute_trade(action, api, pair, amount):
                 message = (
                     f"Buy trade executed successfully for {pair}:\n"
                     f"- Amount: {usd_spent:.2f} USD\n"
-                    f"- Bought: {base_bought:.2f} USD\n"
+                    f"- Bought: {base_bought:.2f} {base_asset}\n"
                     f"- Price: {current_price:.2f} USD\n"
                     f"- Order Details: {order}"
                 )
