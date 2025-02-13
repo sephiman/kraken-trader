@@ -90,7 +90,7 @@ def bot(api):
             logger.info(log_message)
 
             if should_buy(rsi, macd, signal, current_price, lower_band,
-                          drop_percentage) and buy_confirm and buy_trend_ok:
+                          drop_percentage) and buy_confirm and buy_trend_ok or True:
                 message = (
                     f"Buy signal detected for {PAIR}:\n"
                     f"- RSI: {rsi:.2f}\n- MACD: {macd:.2f}\n- Signal: {signal:.2f}\n"

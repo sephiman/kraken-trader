@@ -1,6 +1,6 @@
 # Kraken Trading Bot
 
-A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Relative Strength Index (RSI)** and **MACD** indicators to execute trades, aiming to increase USD holdings. The bot is containerized using Docker for easy deployment and includes detailed logging.
+A Python-based trading bot designed to scalp **BTC/USD** on Kraken. The bot now supports multiple exchanges using an adapter layer, so you can choose between **Kraken** and **Bitget** via an environment variable. It uses **Relative Strength Index (RSI)** and **MACD** indicators to execute trades, aiming to increase USD holdings. The bot is containerized using Docker for easy deployment and includes detailed logging.
 
 ---
 
@@ -37,6 +37,10 @@ A Python-based trading bot designed to scalp **BTC/USD** on Kraken. It uses **Re
   - API credentials stored as environment variables for security.
   - Fully configurable trading parameters (e.g., trade amount, indicator thresholds, trend filters, higher timeframe confirmations).
 
+- **Multi-Exchange Support**:
+  - Now supports multiple exchanges using an adapter layer.  
+    Choose between **Kraken** and **Bitget** by setting the `EXCHANGE` environment variable.
+
 - **Containerized Deployment**:
   - Easy to deploy with Docker and Docker Compose.
 
@@ -55,7 +59,7 @@ kraken_bot/
 ├── requirements.txt            # Python dependencies
 ├── main.py                     # Main entry point for the bot
 ├── config/                     # Configuration files and environment setup
-│   └── config.py               # Configuration settings
+│   └── config.py               # Configuration settings (includes EXCHANGE variable)
 ├── core/                       # Core trading logic
 │   ├── bot.py                  # Scalping bot logic
 │   ├── account.py              # Account balance and trade execution
@@ -65,7 +69,8 @@ kraken_bot/
 │   └── trading_bot.log         # Default log file
 ├── utils/                      # Logging and helper utilities
 │   ├── logger.py               # Logger setup
-│   └── exceptions.py           # Custom exception handling
+│   ├── exchange_api.py         # API adapter for Kraken and Bitget
+│   └── telegram.py             # Telegram message sender
 └── tests/                      # Unit tests for components
     └── test_indicators.py      # Example test for indicator calculations
 ```
@@ -77,7 +82,9 @@ kraken_bot/
 - **Kraken API Credentials**:
   - Create API keys from the [Kraken Dashboard](https://www.kraken.com/).
   - Ensure your API key has permission to execute trades.
-
+- **Bitget API Credentials**:
+  - Create API keys from the [Bitget API](https://www.bitget.com/api-doc/contract/intro).
+  - Ensure your API key has permission to execute trades.
 ---
 
 ## Installation
@@ -91,10 +98,33 @@ cd kraken-trader
 
 ### 2. Set Up Environment Variables
 
-Replace the variables in the docker-compose.yml with your Kraken API keys:
+Update your docker-compose.yml with your API credentials and desired configuration. For example:
+    For Kraken:
 
-    KRAKEN_API_KEY=your_api_key
-    KRAKEN_API_SECRET=your_api_secret
+    environment:
+    - EXCHANGE=KRAKEN
+    - API_KEY=your_kraken_api_key
+    - API_SECRET=your_kraken_api_secret
+    - PAIR=BTC/USD
+    - TRADE_AMOUNT=10
+    - TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+    - TELEGRAM_CHAT_ID=your_telegram_chat_id
+    - LOG_FILE=/var/logs/trading_bot.log
+    - TRADE_HISTORY=/var/logs/trade_history.json
+
+  For Bitget:
+
+    environment:
+    - EXCHANGE=BITGET
+    - API_KEY=your_bitget_api_key
+    - API_SECRET=your_bitget_api_secret
+    - PAIR=BTCUSDT
+    - TRADE_AMOUNT=10
+    - TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+    - TELEGRAM_CHAT_ID=your_telegram_chat_id
+    - LOG_FILE=/var/logs/trading_bot.log
+    - TRADE_HISTORY=/var/logs/trade_history.json
+
 
 ### 3. Build and Run the Bot
 
