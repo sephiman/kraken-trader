@@ -72,15 +72,16 @@ def execute_trade(action, api, pair, amount):
                 )
             record_trade("buy", pair, amount, current_price, base_bought, amount)
         elif action == "sell":
-            if balance['base'] < MIN_AMOUNT_TO_SELL:
+            sell_volume = amount / current_price
+            if sell_volume < MIN_AMOUNT_TO_SELL:
                 message = (
                     f"Attempted to sell {pair} at price {current_price:.2f}, "
-                    f"but no balance available (Current base balance: {balance['base']:.8f})."
+                    f"but calculated sell volume ({sell_volume:.8f} {base_asset}) is below the minimum threshold."
                 )
                 logger.warning(message)
                 return
-            order = place_sell_order(api, pair, balance['base'])
-            base_sold = balance['base']
+            order = place_sell_order(api, pair, sell_volume)
+            base_sold = sell_volume
             usd_value = base_sold * current_price
             if order:
                 message = (
