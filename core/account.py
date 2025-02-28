@@ -72,21 +72,30 @@ def execute_trade(action, api, pair, amount):
                 )
             record_trade("buy", pair, amount, current_price, base_bought, amount)
         elif action == "sell":
-            sell_volume = amount / current_price
-            if sell_volume < MIN_AMOUNT_TO_SELL:
+            target_sell_volume = amount / current_price
+            if balance['base'] < MIN_AMOUNT_TO_SELL:
                 message = (
                     f"Attempted to sell {pair} at price {current_price:.2f}, "
-                    f"but calculated sell volume ({sell_volume:.8f} {base_asset}) is below the minimum threshold."
+                    f"but calculated sell volume ({balance['base']:.8f} {base_asset}) is below the minimum threshold."
                 )
                 logger.warning(message)
                 return
+
+            if balance['base'] < target_sell_volume:
+                logger.info(
+                    f"Available BTC ({balance['base']:.8f}) is less than the target sell volume "
+                    f"({target_sell_volume:.8f}). Selling the entire available balance."
+                )
+                sell_volume = balance['base']
+            else:
+                sell_volume = target_sell_volume
             order = place_sell_order(api, pair, sell_volume)
             base_sold = sell_volume
             usd_value = base_sold * current_price
             if order:
                 message = (
                     f"Sell trade executed successfully for {pair}:\n"
-                    f"- Amount Sold: {base_sold:.8f} {base_asset} (~{usd_value:.2f} USD)\n"
+                    f"- Amount Sold: {base_sold:.8f} {pair.split('/')[0]} (~{usd_value:.2f} USD)\n"
                     f"- Price: {current_price:.2f} USD\n"
                     f"- Order Details: {order}"
                 )
