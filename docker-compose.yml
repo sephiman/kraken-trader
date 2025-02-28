@@ -1,13 +1,15 @@
 services:
   trading-bot:
     build: .
-    container_name: kraken_bot
+    container_name: trading_bot
     environment:
-      - KRAKEN_API_KEY=YOUR_KRAKEN_API_KEY
-      - KRAKEN_API_SECRET=YOUR_KRAKEN_API_SECRET
+      - EXCHANGE=BITGET  # Set to "KRAKEN" or "BITGET"
+      - API_KEY=YOUR_API_KEY
+      - API_SECRET=YOUR_API_SECRET
+      - API_PASSPHRASE=YOUR_API_PASSPHRASE
       - LOG_FILE=/var/logs/trading_bot.log
       - TRADE_HISTORY=/var/logs/trade_history.json
-      - PAIR=BTC/USD
+      - PAIR=BTCUSDT # Set to "BTC/USD" for Kraken or BTCUSDT for "BITGET"
       - TRADE_AMOUNT=10
       - TELEGRAM_BOT_TOKEN=YOUR_BOT_TOKEN
       - TELEGRAM_CHAT_ID=CHAT_ID_WITH_BOT

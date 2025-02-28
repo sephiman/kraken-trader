@@ -1,7 +1,10 @@
 import os
 
-KRAKEN_API_KEY = os.getenv("KRAKEN_API_KEY")
-KRAKEN_API_SECRET = os.getenv("KRAKEN_API_SECRET")
+EXCHANGE = os.getenv("EXCHANGE").upper()
+
+API_KEY = os.getenv("API_KEY")
+SECRET = os.getenv("API_SECRET")
+PASSPHRASE = os.getenv("API_PASSPHRASE")
 
 PAIR = os.getenv("PAIR")
 TRADE_AMOUNT = float(os.getenv("TRADE_AMOUNT", 10))
